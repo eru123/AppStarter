@@ -1,0 +1,35 @@
+{
+  "Version": "1.0.0",
+  "Commands": [
+    {
+      "Id": "example-ping",
+      "Name": "Example - Ping",
+      "Description": "Example command that pings localhost",
+      "Command": "ping",
+      "Arguments": "-t localhost",
+      "WorkingDirectory": "",
+      "RestartPolicy": "None",
+      "RestartDelaySeconds": 5,
+      "MaxRestartAttempts": 3,
+      "StartTrigger": "Manual",
+      "CronExpression": "",
+      "Enabled": true,
+      "Priority": 0,
+      "EnvironmentVariables": {},
+      "RunAsAdmin": false,
+      "HideWindow": true
+    }
+  ],
+  "ServiceSettings": {
+    "ServiceName": "AppStarterService",
+    "DisplayName": "AppStarter Service",
+    "Description": "Manages background processes and scheduled tasks",
+    "StartWithWindows": true
+  },
+  "LoggingSettings": {
+    "LogDirectory": "logs",
+    "MaxLogFileSizeMB": 10,
+    "MaxLogFiles": 10,
+    "LogToConsole": true
+  }
+}
