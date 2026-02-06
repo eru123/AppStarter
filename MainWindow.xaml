@@ -8,7 +8,8 @@
         Height="800" Width="1400"
         MinHeight="600" MinWidth="1000"
         Background="{StaticResource BackgroundBrush}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource CustomWindowStyle}">
     
     <Window.DataContext>
         <vm:MainViewModel/>
@@ -34,7 +35,7 @@
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="0,0,12,0" VerticalAlignment="Center"/>
                                 <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"/>
                                 <Popup x:Name="Popup" Placement="Right" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
                                     <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource SurfaceHoverBrush}" BorderThickness="1" CornerRadius="4" Padding="2" Margin="4,0,0,0">
@@ -126,29 +127,57 @@
                             <!-- Menu Items -->
                             <MenuItem Header="Details" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.ViewDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                      CommandParameter="{Binding}"/>
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="ℹ" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Start" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.StartCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                       CommandParameter="{Binding}"
-                                      Visibility="{Binding Status, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Stopped}"/>
+                                      Visibility="{Binding Status, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Stopped}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="▶" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource SuccessBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Stop" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.StopCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                       CommandParameter="{Binding}"
-                                      Visibility="{Binding Status, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Running}"/>
+                                      Visibility="{Binding Status, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Running}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="■" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource DangerBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Restart" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.RestartCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                      CommandParameter="{Binding}"/>
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="↻" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Edit" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.EditCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                      CommandParameter="{Binding}"/>
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="✎" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <Separator Background="{StaticResource BackgroundBrush}" Height="1" Margin="0,2"/>
                             <MenuItem Header="Duplicate" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.DuplicateCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                      CommandParameter="{Binding}"/>
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="❐" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Delete" Style="{StaticResource ThemedMenuItem}"
                                       Command="{Binding DataContext.DeleteCommandCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                       CommandParameter="{Binding}"
-                                      Foreground="{StaticResource DangerBrush}"/>
+                                      Foreground="{StaticResource DangerBrush}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="🗑" FontSize="14" HorizontalAlignment="Center" Foreground="{StaticResource DangerBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
                     </Menu>
                 </Grid>
@@ -211,7 +240,7 @@
                 <TextBlock Text="⚡ AppStarter" 
                            Foreground="{StaticResource TextPrimaryBrush}"
                            FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="Windows Process Manager" 
+                <TextBlock Text="Commands Process Manager" 
                            Foreground="{StaticResource TextSecondaryBrush}"
                            FontSize="12" Margin="0,2,0,0"/>
             </StackPanel>

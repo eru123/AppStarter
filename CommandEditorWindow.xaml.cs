@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 using AppStarter.Models;
 using MessageBox = System.Windows.MessageBox;
 
@@ -7,13 +8,33 @@ namespace AppStarter;
 public partial class CommandEditorWindow : Window
 {
     public CommandConfig Command { get; private set; }
+    public bool IsNew { get; private set; }
 
-    public CommandEditorWindow(CommandConfig commandToEdit)
+    public CommandEditorWindow(CommandConfig? command = null)
     {
         InitializeComponent();
+
+        // Add Window Command Bindings for custom chrome
+        CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, OnCloseWindow));
+        CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, OnMaximizeWindow, OnCanResizeWindow));
+        CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, OnMinimizeWindow, OnCanMinimizeWindow));
+        CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, OnRestoreWindow, OnCanResizeWindow));
+
+        if (command == null)
+        {
+            // Create new
+            Command = new CommandConfig() { Enabled = true };
+            IsNew = true;
+            Title = "Add Command";
+        }
+        else
+        {
+            // Edit existing (clone to avoid modifying original until saved)
+            Command = (CommandConfig)command.Clone();
+            IsNew = false;
+            Title = "Edit Command";
+        }
         
-        // Clone the command so we don't edit the original directly until saved
-        Command = CloneCommand(commandToEdit);
         DataContext = Command;
     }
 
@@ -40,28 +61,34 @@ public partial class CommandEditorWindow : Window
         DialogResult = false;
         Close();
     }
-
-    private CommandConfig CloneCommand(CommandConfig original)
+    
+    private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
     {
-        return new CommandConfig
-        {
-            Id = original.Id, // Keep ID to update existing
-            Name = original.Name,
-            Description = original.Description,
-            Command = original.Command,
-            Arguments = original.Arguments,
-            WorkingDirectory = original.WorkingDirectory,
-            RestartPolicy = original.RestartPolicy,
-            RestartDelaySeconds = original.RestartDelaySeconds,
-            MaxRestartAttempts = original.MaxRestartAttempts,
-            StartTrigger = original.StartTrigger,
-            CronExpression = original.CronExpression,
-            Enabled = original.Enabled,
-            Priority = original.Priority,
-            EnvironmentVariables = new Dictionary<string, string>(original.EnvironmentVariables),
-            RunAsAdmin = original.RunAsAdmin,
-            HideWindow = original.HideWindow,
-            Status = original.Status // Keep status (though strictly config shouldn't have status, but the model has it)
-        };
+        e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+    }
+
+    private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+    }
+
+    private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
+    {
+        SystemCommands.CloseWindow(this);
+    }
+
+    private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
+    {
+        SystemCommands.MaximizeWindow(this);
+    }
+
+    private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+    {
+        SystemCommands.MinimizeWindow(this);
+    }
+
+    private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+    {
+        SystemCommands.RestoreWindow(this);
     }
 }

@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Command Details" Height="450" Width="600"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}">
+        Background="{StaticResource BackgroundBrush}"
+        Style="{StaticResource CustomWindowStyle}">
     
     <Window.Resources>
         <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>

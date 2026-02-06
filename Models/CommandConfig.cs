@@ -141,4 +141,28 @@ public partial class CommandConfig : ObservableObject
     
     [JsonIgnore]
     public TimeSpan? Uptime => StartedAt.HasValue ? DateTime.Now - StartedAt : null;
+
+    public CommandConfig Clone()
+    {
+        return new CommandConfig
+        {
+            Id = this.Id,
+            Name = this.Name,
+            Description = this.Description,
+            Command = this.Command,
+            Arguments = this.Arguments,
+            WorkingDirectory = this.WorkingDirectory,
+            RestartPolicy = this.RestartPolicy,
+            RestartDelaySeconds = this.RestartDelaySeconds,
+            MaxRestartAttempts = this.MaxRestartAttempts,
+            StartTrigger = this.StartTrigger,
+            CronExpression = this.CronExpression,
+            Enabled = this.Enabled,
+            Priority = this.Priority,
+            EnvironmentVariables = new Dictionary<string, string>(this.EnvironmentVariables),
+            RunAsAdmin = this.RunAsAdmin,
+            HideWindow = this.HideWindow,
+            Status = this.Status
+        };
+    }
 }

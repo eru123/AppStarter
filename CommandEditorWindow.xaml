@@ -9,6 +9,7 @@
         Title="Command Editor" Height="650" Width="800"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource SurfaceBrush}"
+        Style="{StaticResource CustomWindowStyle}"
         ResizeMode="NoResize">
     
     <Window.Resources>
