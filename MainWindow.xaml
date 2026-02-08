@@ -189,23 +189,23 @@
         <!-- LogEntryTemplate moved to App.xaml -->
     </Window.Resources>
     
-    <Grid Margin="12">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Main Menu -->
-        <Menu Grid.Row="0" Background="{StaticResource SurfaceBrush}" Padding="4">
+        <Menu Grid.Row="0" Background="{StaticResource BackgroundBrush}" Padding="6,4" Foreground="{StaticResource TextPrimaryBrush}">
+            <Menu.Resources>
+                <Style TargetType="MenuItem" BasedOn="{StaticResource ThemedMenuItem}"/>
+            </Menu.Resources>
             <MenuItem Header="File">
+                <MenuItem Header="Import Configuration..." Click="Import_Click"/>
+                <MenuItem Header="Export Configuration..." Click="Export_Click"/>
+                <Separator Background="{StaticResource BorderBrush}" Margin="0,2"/>
                 <MenuItem Header="Exit" Click="Exit_Click"/>
             </MenuItem>
-            <!--
-            <MenuItem Header="Edit" Visibility="Collapsed">
-                 <MenuItem Header="Settings (Todo)" />
-            </MenuItem>
-            -->
             <MenuItem Header="View">
                 <MenuItem Header="Toggle Logs" Click="ToggleLogs_Click"/>
             </MenuItem>
@@ -214,206 +214,214 @@
             </MenuItem>
         </Menu>
         
-        <!-- Header -->
-        <Grid Grid.Row="1" Margin="0,8,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="⚡ AppStarter" 
-                           Foreground="{StaticResource TextPrimaryBrush}"
-                           FontSize="20" FontWeight="Bold"/>
-                <TextBlock Text="Commands Process Manager" 
-                           Foreground="{StaticResource TextSecondaryBrush}"
-                           FontSize="12" Margin="0,2,0,0"/>
-            </StackPanel>
-            
-            <!-- Service Status -->
-            <Border Grid.Column="1" 
-                    Background="{StaticResource SurfaceBrush}" 
-                    CornerRadius="8" Padding="12,6">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Service: " 
-                               Foreground="{StaticResource TextSecondaryBrush}"
-                               VerticalAlignment="Center" FontSize="12"/>
-                    <TextBlock Text="{Binding ServiceStatus}" 
-                               Foreground="{StaticResource AccentBrush}"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center" Margin="0,0,12,0" FontSize="12"/>
-                    
-                    <Button Content="Install" Style="{StaticResource PrimaryButton}"
-                            Command="{Binding InstallServiceCommand}"
-                            Visibility="{Binding IsInstallServiceVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Padding="8,4" Margin="0,0,8,0" FontSize="12"/>
-                    
-                    <Button Content="Uninstall" Style="{StaticResource DangerButton}"
-                            Command="{Binding UninstallServiceCommand}"
-                            Visibility="{Binding IsUninstallServiceVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Padding="8,4" FontSize="12"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-        
-        <!-- Main Content -->
-        <Grid Grid.Row="2">
+        <!-- Content Area -->
+        <Grid Grid.Row="1" Margin="12">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*" MinHeight="200"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition x:Name="LogsRow" Height="*" MinHeight="150"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="⚡ AppStarter" 
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Text="Commands Process Manager" 
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12" Margin="0,2,0,0"/>
+                </StackPanel>
+                
+                <!-- Service Status -->
+                <Border Grid.Column="1" 
+                        Background="{StaticResource SurfaceBrush}" 
+                        CornerRadius="8" Padding="12,6">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Service: " 
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center" FontSize="12"/>
+                        <TextBlock Text="{Binding ServiceStatus}" 
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" Margin="0,0,12,0" FontSize="12"/>
+                        
+                        <Button Content="Install" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding InstallServiceCommand}"
+                                Visibility="{Binding IsInstallServiceVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Padding="8,4" Margin="0,0,8,0" FontSize="12"/>
+                        
+                        <Button Content="Uninstall" Style="{StaticResource DangerButton}"
+                                Command="{Binding UninstallServiceCommand}"
+                                Visibility="{Binding IsUninstallServiceVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Padding="8,4" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
             
-            <!-- Top Panel - Command List -->
-            <Border Grid.Row="0" 
-                    Background="{StaticResource SurfaceBrush}" 
-                    CornerRadius="8" Padding="8">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <!-- Panel Header with Actions -->
-                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <!-- Main Content -->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" MinHeight="200"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition x:Name="LogsRow" Height="*" MinHeight="150"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Top Panel - Command List -->
+                <Border Grid.Row="0" 
+                        Background="{StaticResource SurfaceBrush}" 
+                        CornerRadius="8" Padding="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         
-                        <TextBlock Grid.Column="0" Text="Commands" 
-                                   Foreground="{StaticResource TextPrimaryBrush}"
-                                   FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <!-- Panel Header with Actions -->
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="Commands" 
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            
+                            <!-- Bulk Actions & Add Button -->
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Button x:Name="LogsButton" Content="📋 Logs" 
+                                        Style="{StaticResource SecondaryButton}"
+                                        Click="LogsButton_Click"
+                                        Visibility="Collapsed"
+                                        Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
+                                <Button Content="▶ All" 
+                                        Style="{StaticResource SuccessButton}"
+                                        Command="{Binding StartAllCommandsCommand}"
+                                        Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
+                                <Button Content="■ All" 
+                                        Style="{StaticResource DangerButton}"
+                                        Command="{Binding StopAllCommandsCommand}"
+                                        Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
+                                <Button Content="+ Add" 
+                                        Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding AddCommandCommand}"
+                                        Padding="12,4" FontSize="12"/>
+                            </StackPanel>
+                        </Grid>
                         
-                        <!-- Bulk Actions & Add Button -->
-                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                            <Button x:Name="LogsButton" Content="📋 Logs" 
+                        <!-- Search -->
+                        <TextBox Grid.Row="1" 
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,10" Padding="8,6" FontSize="12"
+                                 BorderThickness="0" Background="{StaticResource BackgroundBrush}"
+                                 Foreground="{StaticResource TextPrimaryBrush}">
+                            <TextBox.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </TextBox.Resources>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <VisualBrush Stretch="None" AlignmentX="Left">
+                                                        <VisualBrush.Visual>
+                                                            <TextBlock Text="🔍 Search commands..." 
+                                                                       Foreground="{StaticResource TextMutedBrush}"
+                                                                       Margin="10,6,0,0" FontSize="12"/>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        
+                        <!-- Command List -->
+                        <ListBox Grid.Row="2" 
+                                 ItemsSource="{Binding Commands}"
+                                 SelectedItem="{Binding SelectedCommand}"
+                                 ItemTemplate="{StaticResource CommandCardTemplate}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 Background="Transparent"
+                                 BorderThickness="0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <ContentPresenter/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
+                </Border>
+                
+                <!-- Splitter -->
+                <GridSplitter x:Name="LogsSplitter" Grid.Row="1" Height="4" HorizontalAlignment="Stretch" 
+                              VerticalAlignment="Center" Background="Transparent" ResizeBehavior="PreviousAndNext"/>
+                
+                <!-- Bottom Panel - Logs -->
+                <Border x:Name="LogsSection" Grid.Row="2" 
+                        Background="{StaticResource SurfaceBrush}" 
+                        CornerRadius="8" Padding="8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <TextBlock Text="📋 Logs" 
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <Button Content="🗑 Clear" 
                                     Style="{StaticResource SecondaryButton}"
-                                    Click="LogsButton_Click"
-                                    Visibility="Collapsed"
-                                    Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
-                            <Button Content="▶ All" 
-                                    Style="{StaticResource SuccessButton}"
-                                    Command="{Binding StartAllCommandsCommand}"
-                                    Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
-                            <Button Content="■ All" 
-                                    Style="{StaticResource DangerButton}"
-                                    Command="{Binding StopAllCommandsCommand}"
-                                    Padding="10,4" Margin="0,0,8,0" FontSize="11"/>
-                            <Button Content="+ Add" 
-                                    Style="{StaticResource PrimaryButton}"
-                                    Command="{Binding AddCommandCommand}"
-                                    Padding="12,4" FontSize="12"/>
-                        </StackPanel>
+                                    Command="{Binding ClearLogsCommand}"
+                                    HorizontalAlignment="Right"
+                                    Padding="8,2" FontSize="11"/>
+                        </Grid>
+                        
+                        <ListBox x:Name="LogList"
+                                 Grid.Row="1"
+                                 ItemsSource="{Binding Logs}"
+                                 ItemTemplate="{StaticResource LogEntryTemplate}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Focusable" Value="False"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <ContentPresenter/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
                     </Grid>
-                    
-                    <!-- Search -->
-                    <TextBox Grid.Row="1" 
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,10" Padding="8,6" FontSize="12"
-                             BorderThickness="0" Background="{StaticResource BackgroundBrush}"
-                             Foreground="{StaticResource TextPrimaryBrush}">
-                        <TextBox.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </TextBox.Resources>
-                        <TextBox.Style>
-                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                <Style.Triggers>
-                                    <Trigger Property="Text" Value="">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <VisualBrush Stretch="None" AlignmentX="Left">
-                                                    <VisualBrush.Visual>
-                                                        <TextBlock Text="🔍 Search commands..." 
-                                                                   Foreground="{StaticResource TextMutedBrush}"
-                                                                   Margin="10,6,0,0" FontSize="12"/>
-                                                    </VisualBrush.Visual>
-                                                </VisualBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-                    
-                    <!-- Command List -->
-                    <ListBox Grid.Row="2" 
-                             ItemsSource="{Binding Commands}"
-                             SelectedItem="{Binding SelectedCommand}"
-                             ItemTemplate="{StaticResource CommandCardTemplate}"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             Background="Transparent"
-                             BorderThickness="0">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <ContentPresenter/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                </Grid>
-            </Border>
-            
-            <!-- Splitter -->
-            <GridSplitter x:Name="LogsSplitter" Grid.Row="1" Height="4" HorizontalAlignment="Stretch" 
-                          VerticalAlignment="Center" Background="Transparent" ResizeBehavior="PreviousAndNext"/>
-            
-            <!-- Bottom Panel - Logs -->
-            <Border x:Name="LogsSection" Grid.Row="2" 
-                    Background="{StaticResource SurfaceBrush}" 
-                    CornerRadius="8" Padding="8">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <TextBlock Text="📋 Logs" 
-                                   Foreground="{StaticResource TextPrimaryBrush}"
-                                   FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                        <Button Content="🗑 Clear" 
-                                Style="{StaticResource SecondaryButton}"
-                                Command="{Binding ClearLogsCommand}"
-                                HorizontalAlignment="Right"
-                                Padding="8,2" FontSize="11"/>
-                    </Grid>
-                    
-                    <ListBox x:Name="LogList"
-                             Grid.Row="1"
-                             ItemsSource="{Binding Logs}"
-                             ItemTemplate="{StaticResource LogEntryTemplate}"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Focusable" Value="False"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <ContentPresenter/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                </Grid>
-            </Border>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

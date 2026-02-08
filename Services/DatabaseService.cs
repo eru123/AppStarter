@@ -1,6 +1,7 @@
 using System.Data;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using AppStarter.Models;
 using Microsoft.Data.Sqlite;
@@ -222,12 +223,14 @@ public class DatabaseService
         }
     }
 
+    private readonly ConcurrentBag<Task> _pendingLogs = new();
+
     public void SaveLog(LogEntry entry)
     {
         if (!_isInitialized) return;
 
-        // Fire and forget logging
-        Task.Run(() =>
+        // Fire and forget logging, but track it
+        var task = Task.Run(() =>
         {
             try
             {
@@ -252,5 +255,24 @@ public class DatabaseService
                 // Silently fail logging to avoid recursion
             }
         });
+
+        _pendingLogs.Add(task);
+        
+        // Cleanup completed tasks occasionally
+        if (_pendingLogs.Count > 100)
+        {
+            var completed = _pendingLogs.Where(t => t.IsCompleted).ToList();
+            foreach (var t in completed) _pendingLogs.TryTake(out _);
+        }
+    }
+
+    public async Task WaitForPendingLogsAsync()
+    {
+        var tasks = _pendingLogs.ToList();
+        if (tasks.Count > 0)
+        {
+            await Task.WhenAll(tasks);
+        }
+        _pendingLogs.Clear();
     }
 }

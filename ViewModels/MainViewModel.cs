@@ -379,6 +379,7 @@ public partial class MainViewModel : ObservableObject
         await _processManager.StopAllAsync();
         _schedulerService.Dispose();
         _processManager.Dispose();
+        await _databaseService.WaitForPendingLogsAsync();
     }
 
     public void Cleanup()

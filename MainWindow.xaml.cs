@@ -122,6 +122,73 @@ public partial class MainWindow : Window
         about.ShowDialog();
     }
 
+    private void Export_Click(object sender, RoutedEventArgs e)
+    {
+        var sfd = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = "AppStarter Backup (*.asbak)|*.asbak",
+            FileName = $"AppStarter_Backup_{DateTime.Now:yyyyMMdd}",
+            Title = "Export Configuration"
+        };
+
+        if (sfd.ShowDialog() == true)
+        {
+            try
+            {
+                var backupService = new Services.BackupService();
+                backupService.Export(sfd.FileName);
+                System.Windows.MessageBox.Show("Configuration exported successfully!", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Export failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private async void Import_Click(object sender, RoutedEventArgs e)
+    {
+        var ofd = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "AppStarter Backup (*.asbak)|*.asbak",
+            Title = "Import Configuration"
+        };
+
+        if (ofd.ShowDialog() == true)
+        {
+            var result = System.Windows.MessageBox.Show(
+                "Importing a configuration will OVERWRITE your current commands and logs.\n\nThe application will restart to apply changes.\n\nDo you want to proceed?",
+                "Confirm Import",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    // Cleanup current state
+                    if (_viewModel != null)
+                    {
+                        await _viewModel.CleanupAsync();
+                    }
+
+                    var backupService = new Services.BackupService();
+                    backupService.Import(ofd.FileName);
+
+                    System.Windows.MessageBox.Show("Import successful! The application will now restart.", "Import Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
+                    // Restart the application
+                    System.Diagnostics.Process.Start(Environment.ProcessPath!);
+                    System.Windows.Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Import failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
     private void ToggleLogs_Click(object sender, RoutedEventArgs e)
     {
         if (LogsSection.Visibility == Visibility.Visible)
