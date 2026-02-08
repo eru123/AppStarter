@@ -16,6 +16,12 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
+        // Handling custom title bar commands
+        CommandBindings.Add(new System.Windows.Input.CommandBinding(SystemCommands.CloseWindowCommand, (s, e) => SystemCommands.CloseWindow(this)));
+        CommandBindings.Add(new System.Windows.Input.CommandBinding(SystemCommands.MaximizeWindowCommand, (s, e) => SystemCommands.MaximizeWindow(this)));
+        CommandBindings.Add(new System.Windows.Input.CommandBinding(SystemCommands.MinimizeWindowCommand, (s, e) => SystemCommands.MinimizeWindow(this)));
+        CommandBindings.Add(new System.Windows.Input.CommandBinding(SystemCommands.RestoreWindowCommand, (s, e) => SystemCommands.RestoreWindow(this)));
+        
         // Set window icon programmatically
         try
         {
@@ -66,6 +72,59 @@ public partial class MainWindow : Window
         StateChanged += MainWindow_StateChanged;
     }
     
+    private LogsWindow? _logsWindow;
+
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (ActualHeight < 600)
+        {
+            LogsRow.Height = new GridLength(0);
+            LogsRow.MinHeight = 0;
+            LogsSplitter.Visibility = Visibility.Collapsed;
+            LogsSection.Visibility = Visibility.Collapsed;
+            LogsButton.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            if (LogsRow.Height.Value == 0)
+            {
+                LogsRow.Height = new GridLength(1, GridUnitType.Star);
+                LogsRow.MinHeight = 150;
+            }
+            LogsSplitter.Visibility = Visibility.Visible;
+            LogsSection.Visibility = Visibility.Visible;
+            LogsButton.Visibility = Visibility.Collapsed;
+            
+            if (_logsWindow != null)
+            {
+                _logsWindow.Close();
+                _logsWindow = null;
+            }
+        }
+    }
+
+    private void LogsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_logsWindow == null)
+        {
+            if (_viewModel != null)
+            {
+                _logsWindow = new LogsWindow(_viewModel);
+                _logsWindow.Owner = this;
+                _logsWindow.Closed += (s, args) => _logsWindow = null;
+                _logsWindow.Show();
+            }
+        }
+        else
+        {
+            _logsWindow.Activate();
+            if (_logsWindow.WindowState == WindowState.Minimized)
+            {
+                _logsWindow.WindowState = WindowState.Normal;
+            }
+        }
+    }
+
     private void MainWindow_StateChanged(object? sender, EventArgs e)
     {
         // When minimized, hide to tray if enabled
@@ -90,25 +149,21 @@ public partial class MainWindow : Window
         if (!App.IsAdmin)
         {
             var result = System.Windows.MessageBox.Show(
-                "Do you want to stop all running services before exiting?",
+                "All running command process will stop.\nContinue to exit the application?",
                 "Confirm Exit",
-                System.Windows.MessageBoxButton.YesNoCancel,
+                System.Windows.MessageBoxButton.YesNo,
                 System.Windows.MessageBoxImage.Question);
 
-            if (result == System.Windows.MessageBoxResult.Cancel)
+            if (result == System.Windows.MessageBoxResult.No)
             {
                 e.Cancel = true;
                 return;
             }
 
-            if (result == System.Windows.MessageBoxResult.Yes)
-            {
-                e.Cancel = true;
-                PerformExitAsync();
-                return;
-            }
-            
-            // If No, proceed to regular exit (will trigger tray check or final exit)
+            // If Yes, proceed to exit
+            e.Cancel = true;
+            PerformExitAsync();
+            return;
         }
 
         // If not explicitly exiting through tray menu, minimize to tray instead
@@ -117,6 +172,9 @@ public partial class MainWindow : Window
         {
             e.Cancel = true;
             _trayManager.MinimizeToTray();
+            
+            // Also hide logs window if main is minimized to tray
+            _logsWindow?.Hide();
             return;
         }
         
@@ -148,6 +206,7 @@ public partial class MainWindow : Window
             
             Dispatcher.Invoke(() =>
             {
+                _logsWindow?.Close();
                 overlay.Close();
                 _isCleanExit = true;
                 Close();

@@ -1,6 +1,7 @@
 ﻿<Application x:Class="AppStarter.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:AppStarter.Models">
     <Application.Resources>
         <ResourceDictionary>
             <!-- Color Palette - Modern Dark Theme -->
@@ -347,6 +348,11 @@
                                                     Background="Transparent">
                                                 <TextBlock Text="☐" FontSize="10" />
                                             </Button>
+                                            <Button x:Name="RestoreButton" Style="{StaticResource IconButton}" Width="46" Height="32" Padding="0"
+                                                    Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
+                                                    Background="Transparent" Visibility="Collapsed">
+                                                <TextBlock Text="❐" FontSize="10" />
+                                            </Button>
                                             <Button x:Name="CloseButton" Width="46" Height="32" Padding="0"
                                                     Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}"
                                                     Background="Transparent">
@@ -372,6 +378,7 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="WindowState" Value="Maximized">
                                     <Setter TargetName="MaximizeButton" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="RestoreButton" Property="Visibility" Value="Visible"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                 </Trigger>
                                 <Trigger Property="ResizeMode" Value="NoResize">
@@ -387,6 +394,43 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <!-- Log Entry Template -->
+            <DataTemplate x:Key="LogEntryTemplate" DataType="{x:Type models:LogEntry}">
+                <Grid Margin="0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0" 
+                               Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               FontFamily="Consolas" FontSize="11"/>
+                    
+                    <TextBlock Grid.Column="1" 
+                               Text="{Binding CommandName}"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontFamily="Consolas" FontSize="11"
+                               TextTrimming="CharacterEllipsis"/>
+                    
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding Message}"
+                               FontFamily="Consolas" FontSize="11"
+                               TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsError}" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
