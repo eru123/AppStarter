@@ -76,6 +76,8 @@ public partial class MainWindow : Window
 
     private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
     {
+        // Don't auto-hide/show if user explicitly toggled logs, 
+        // unless we forced it? For now, keep the simple responsive logic.
         if (ActualHeight < 600)
         {
             LogsRow.Height = new GridLength(0);
@@ -100,6 +102,45 @@ public partial class MainWindow : Window
                 _logsWindow.Close();
                 _logsWindow = null;
             }
+        }
+    }
+    
+    private void Exit_Click(object sender, RoutedEventArgs e)
+    {
+        // Force full exit
+        if (_trayManager != null)
+        {
+            _trayManager.IsExiting = true;
+        }
+        Close();
+    }
+
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        var about = new AboutWindow();
+        about.Owner = this;
+        about.ShowDialog();
+    }
+
+    private void ToggleLogs_Click(object sender, RoutedEventArgs e)
+    {
+        if (LogsSection.Visibility == Visibility.Visible)
+        {
+            // Hide
+            LogsRow.Height = new GridLength(0);
+            LogsRow.MinHeight = 0;
+            LogsSplitter.Visibility = Visibility.Collapsed;
+            LogsSection.Visibility = Visibility.Collapsed;
+            LogsButton.Visibility = Visibility.Visible; // Optionally show button or just hide everything
+        }
+        else
+        {
+            // Show
+            LogsRow.Height = new GridLength(1, GridUnitType.Star);
+            LogsRow.MinHeight = 150;
+            LogsSplitter.Visibility = Visibility.Visible;
+            LogsSection.Visibility = Visibility.Visible;
+            LogsButton.Visibility = Visibility.Collapsed;
         }
     }
 

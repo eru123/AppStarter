@@ -192,11 +192,30 @@
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+        <!-- Main Menu -->
+        <Menu Grid.Row="0" Background="{StaticResource SurfaceBrush}" Padding="4">
+            <MenuItem Header="File">
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+            </MenuItem>
+            <!--
+            <MenuItem Header="Edit" Visibility="Collapsed">
+                 <MenuItem Header="Settings (Todo)" />
+            </MenuItem>
+            -->
+            <MenuItem Header="View">
+                <MenuItem Header="Toggle Logs" Click="ToggleLogs_Click"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
         
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,8">
+        <Grid Grid.Row="1" Margin="0,8,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -238,7 +257,7 @@
         </Grid>
         
         <!-- Main Content -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="2*" MinHeight="200"/>
                 <RowDefinition Height="Auto"/>

@@ -146,7 +146,7 @@ public class TrayIconManager : IDisposable
         });
     }
     
-    public bool IsExiting => _isExiting;
+    public bool IsExiting { get { return _isExiting; } set { _isExiting = value; } }
     
     public void Dispose()
     {

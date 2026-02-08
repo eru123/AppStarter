@@ -68,6 +68,30 @@ public partial class App : Application
         // Normal UI mode
         var mainWindow = new MainWindow();
         mainWindow.Show();
+        
+        // global error handling
+        this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+    }
+    
+    private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        ShowErrorDialog(e.Exception);
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception ex)
+        {
+            ShowErrorDialog(ex);
+        }
+    }
+
+    private void ShowErrorDialog(Exception ex)
+    {
+        string message = $"An unexpected error occurred:\n\n{ex.Message}\n\nStack Trace:\n{ex.StackTrace}";
+        MessageBox.Show(message, "AppStarter Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
     
     private void RunAsService()
