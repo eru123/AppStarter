@@ -1,8 +1,8 @@
-# ⚡ AppStarter v2
+# ⚡ AppStarter
 
 **AppStarter** is a lightweight, modern Windows process manager and service runner. It allows you to manage, monitor, and automate scripts and console applications with ease.
 
-![AppStarter Screenshot](https://raw.githubusercontent.com/placeholder/appstarter-screenshot.png)
+![AppStarter Screenshot](screenshot.png)
 
 ## ✨ Features
 
