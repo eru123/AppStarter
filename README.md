@@ -23,7 +23,7 @@
 - Administrator privileges (for Windows Service management)
 
 ### Running the App
-Since AppStarter is compiled as a self-contained executable, you can simply run `AppStarter_v2.exe`. It will automatically create the necessary configuration folders in your `%ProgramData%\AppStarter` directory.
+Since AppStarter is compiled as a self-contained executable, you can simply run `AppStarter.exe`. It will automatically create the necessary configuration folders in your `%ProgramData%\AppStarter` directory.
 
 ## 🛠️ Configuration & Backups
 
@@ -33,7 +33,13 @@ You can find the "File" menu in the top bar to:
 
 ## 🏗️ Building from Source
 
-To build AppStarter and generate the single-file executables for both x64 and x86 architectures, simply run the included automation script:
+### Build Prerequisites
+To use the full build pipeline (including installers), you should have the following installed:
+- **[.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)** (Required)
+- **[Inno Setup 6.4+](https://jrsoftware.org/isdl.php)** (Optional - For `.exe` installers)
+- **[WiX Toolset v6.x](https://wixtoolset.org/releases/)** (Optional - For `.msi` installers)
+
+To build AppStarter and generate the single-file executables and installers, simply run the included automation script:
 
 ```bash
 build.bat
@@ -45,6 +51,11 @@ This script will:
     *   **win-x64**: Located in `./dist/x64`
     *   **win-x86**: Located in `./dist/x86`
 3.  **Self-contain** all dependencies so the app runs without a .NET installation.
+4.  **Author Installers**:
+    *   **EXE (Inno Setup)**: Creates professional installers if Inno Setup is installed.
+    *   **MSI (WiX Toolset)**: Creates standard Windows MSI packages if WiX is installed.
+
+All outputs (Single-EXE, Setup-EXE, and MSI) are neatly organized in the `./dist/vX.X.X/` directory.
 
 ## 📂 Project Structure
 

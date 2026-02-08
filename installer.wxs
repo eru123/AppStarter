@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" Name="AppStarter" Language="1033" Version="$(var.Version)" Manufacturer="AppStarter Team" UpgradeCode="d23f4567-e89b-12d3-a456-426614174000">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="$(var.Platform)"/>
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <MediaTemplate EmbedCab="yes" />
+
+        <Feature Id="ProductFeature" Title="AppStarter" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+    </Product>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="$(var.ProgramFilesId)">
+                <Directory Id="INSTALLFOLDER" Name="AppStarter" />
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="AppStarter.exe" Guid="*">
+                <File Id="AppStarter.exe" Source="$(var.SourcePath)\AppStarter.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
