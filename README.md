@@ -1,8 +1,8 @@
 # ⚡ AppStarter
 
-**AppStarter** is a lightweight, modern Windows process manager and service runner. It allows you to manage, monitor, and automate scripts and console applications with ease.
+**AppStarter** is a lightweight, modern, **Free and Open Source** Windows process manager and service runner. It allows you to manage, monitor, and automate scripts and console applications with ease.
 
-![AppStarter Screenshot](screenshot.png)
+![AppStarter Screenshot](public/screenshot.png)
 
 ## ✨ Features
 
@@ -14,6 +14,7 @@
 - **Modern UI**: A clean, dark-themed WPF interface with a responsive design.
 - **Portable Backups**: Export and Import your entire configuration (commands and database) into a single compressed `.asbak` file.
 - **Single Executable**: Ships as a single, self-contained `.exe` file—no installer or .NET runtime installation required.
+- **Free & Open Source**: Licensed under MIT. Community-driven and free to use for personal and commercial projects.
 - **Custom Branding**: Supports a custom `icon.ico` for the taskbar and file explorer (simply place a file named `icon.ico` in the root folder before building).
 
 ## 🚀 Getting Started
