@@ -3,5 +3,11 @@
     "compatibility_date": "2026-02-08",
     "assets": {
         "directory": "./public"
-    }
+    },
+    "routes": [
+        {
+            "pattern": "appstarter.skiddph.com",
+            "custom_domain": true
+        }
+    ]
 }
